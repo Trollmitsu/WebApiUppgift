@@ -28,7 +28,7 @@ namespace WebApiUppgift.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        public IActionResult Update(int id, AnnonsDTO UpdateAnnons)
+        public IActionResult Update(int id, UpdateDTO UpdateAnnons)
         {
             var annons = _context.Annonser.FirstOrDefault(e => e.Id == id);
             if (annons == null) return NotFound();
@@ -51,18 +51,19 @@ namespace WebApiUppgift.Controllers
             _context.Annonser.Add(annonser);
             _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetOne), new { id = Nyannons.Id }, annonser);
+            return CreatedAtAction(nameof(GetOne), annonser);
         }
 
         [HttpGet]
         public IActionResult Index()
         {
            
-            return Ok(_context.Annonser.Select(e => new AnnonsDTO
+            return Ok(_context.Annonser.Select(e => new AnnonsIdDTO
             {
+                Id = e.Id,
                 Title = e.Title,
                 Description = e.Description,
-                Id = e.Id
+                
 
             }).ToList());
 
@@ -75,11 +76,11 @@ namespace WebApiUppgift.Controllers
             var annons = _context.Annonser.FirstOrDefault(e => e.Id == id);
             if (annons == null)
                 return NotFound();
-            var ret = new AnnonsDTO
+            var ret = new AnnonsIdDTO
             {
                 Title = annons.Title,
                 Description = annons.Description,
-                Id = annons.Id,
+                
                
             };
             return Ok(ret);
