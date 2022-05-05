@@ -17,10 +17,11 @@ namespace WebApiUppgift.Controllers
         }
         [HttpDelete]
         [Route("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(int id, DeleteDTO DeleteAnnons)
         {
             var annons = _context.Annonser.FirstOrDefault(e => e.Id == id);
             if (annons == null) return NotFound();
+
             _context.Remove(annons);
             _context.SaveChanges();
             return NoContent();
@@ -39,9 +40,26 @@ namespace WebApiUppgift.Controllers
             _context.SaveChanges();
             return NoContent();
         }
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult GetOne(int id)
+        {
+            var annons = _context.Annonser.FirstOrDefault(e => e.Id == id);
+            if (annons == null)
+                return NotFound();
+            var ret = new GetOneDTO
+            {
+                Id = annons.Id,
+                Title = annons.Title,
+                Description = annons.Description,
+
+
+            };
+            return Ok(ret);
+        }
 
         [HttpPost]
-        public IActionResult Create(AnnonsDTO Nyannons)
+        public IActionResult Create(CreateDTO Nyannons)
         {
             var annonser = new Annonser
             {
@@ -55,10 +73,10 @@ namespace WebApiUppgift.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult GetAll()
         {
            
-            return Ok(_context.Annonser.Select(e => new AnnonsIdDTO
+            return Ok(_context.Annonser.Select(e => new GetOneDTO
             {
                 Id = e.Id,
                 Title = e.Title,
@@ -69,21 +87,6 @@ namespace WebApiUppgift.Controllers
 
         }
 
-        [HttpGet]
-        [Route("{id}")]
-        public IActionResult GetOne(int id)
-        {
-            var annons = _context.Annonser.FirstOrDefault(e => e.Id == id);
-            if (annons == null)
-                return NotFound();
-            var ret = new AnnonsIdDTO
-            {
-                Title = annons.Title,
-                Description = annons.Description,
-                
-               
-            };
-            return Ok(ret);
-        }
+       
     }
 }
